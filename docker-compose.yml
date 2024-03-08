@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: 'postgres:13'
+    container_name: test_task_postgres
+    restart: 'always'
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    networks:
+      - redis_test_task_botdb
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '63479:6379'
+    volumes:
+      - ./redis:/root/redis
+    networks:
+      - redis_test_task_botdb
+
+  bot:
+    build: .
+    container_name: test_task_bot
+    restart: 'always'
+    networks:
+      - redis_test_task_botdb
+    env_file:
+      - .env
+
+networks:
+  redis_test_task_botdb:

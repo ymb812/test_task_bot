@@ -1,6 +1,7 @@
 venv
 **__pycache__
 .idea
+postgresql
 app/logs_file.txt
 
 # Byte-compiled / optimized / DLL files
@@ -11,6 +12,7 @@ __pycache__/
 # C extensions
 *.so
 .env
+.postgres.env
 # Distribution / packaging
 .Python
 build/
