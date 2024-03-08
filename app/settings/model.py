@@ -13,6 +13,13 @@ class Broadcaster(BaseModel):
     mailing_batch_size: int = fields.Field(alias='MAILING_BATCH_SIZE')
 
 
+class Dialogues(BaseModel):
+    categories_per_page_height: int = fields.Field(alias='CATEGORIES_HEIGHT')
+    categories_per_page_width: int = fields.Field(alias='CATEGORIES_WIDTH')
+    products_per_page_height: int = fields.Field(alias='PRODUCTS_HEIGHT')
+    products_per_page_width: int = fields.Field(alias='PRODUCTS_WIDTH')
+
+
 class AppSettings(BaseModel):
     prod_mode: bool = fields.Field(alias='PROD_MODE', default=False)
     logs_file: str = fields.Field(alias='LOGS_FILE', default='logs_file.txt')
@@ -38,6 +45,7 @@ class Settings(
     AppSettings,
     PostgresSettings,
     Broadcaster,
+    Dialogues,
     RedisSettings
 ):
     model_config = SettingsConfigDict(extra='ignore')

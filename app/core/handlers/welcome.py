@@ -1,9 +1,11 @@
 import logging
-from aiogram import Bot, types, Router, exceptions
+from aiogram import Bot, types, Router, F, exceptions
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, StateFilter
+from aiogram_dialog import DialogManager, StartMode
 from core.utils.texts import set_user_commands, set_admin_commands, _
 from core.database.models import User
+from core.states.dialogs import CatalogStateGroup
 from core.keyboards.reply import main_menu_kb
 from settings import settings
 
@@ -45,3 +47,18 @@ async def start_handler(message: types.Message, bot: Bot, state: FSMContext):
         await set_admin_commands(bot=bot, scope=types.BotCommandScopeChat(chat_id=message.from_user.id))
 
     await message.answer(text=_('REGISTERED'), reply_markup=main_menu_kb())
+
+
+@router.message(F.text == '📋 Каталог', StateFilter(None))
+async def catalog(message: types.Message, bot: Bot, state: FSMContext, dialog_manager: DialogManager):
+    await dialog_manager.start(state=CatalogStateGroup.categories, mode=StartMode.RESET_STACK)
+
+
+@router.message(F.text == '📦 Корзина', StateFilter(None))
+async def cart(message: types.Message, bot: Bot, state: FSMContext):
+    pass
+
+
+@router.message(F.text == '❓ Часто задаваемые вопросы', StateFilter(None))
+async def FAQ(message: types.Message, bot: Bot, state: FSMContext):
+    pass

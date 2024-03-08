@@ -49,3 +49,32 @@ class User(Model):
     @classmethod
     async def set_status(cls, user_id: int, status: str | None):
         await cls.filter(user_id=user_id).update(status=status)
+
+
+class Category(Model):
+    class Meta:
+        table = 'categories'
+        ordering = ['id']
+
+    id = fields.IntField(pk=True, index=True)
+    name = fields.CharField(max_length=32, null=True)
+
+
+class SubCategory(Model):
+    class Meta:
+        table = 'subcategories'
+        ordering = ['id']
+
+    id = fields.IntField(pk=True, index=True)
+    name = fields.CharField(max_length=32, null=True)
+    parent_category = fields.ForeignKeyField(model_name='models.Category', to_field='id', null=True)
+
+
+class Product(Model):
+    class Meta:
+        table = 'products'
+        ordering = ['id']
+
+    id = fields.IntField(pk=True, index=True)
+    name = fields.CharField(max_length=32, null=True)
+    parent_category = fields.ForeignKeyField(model_name='models.SubCategory', to_field='id', null=True)
