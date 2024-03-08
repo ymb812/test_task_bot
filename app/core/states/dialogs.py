@@ -6,3 +6,5 @@ class CatalogStateGroup(StatesGroup):
     subcategories = State()
     products = State()
     product_interaction = State()
+    product_amount = State()
+    product_confirm = State()

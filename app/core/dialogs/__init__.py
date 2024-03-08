@@ -1,4 +1,4 @@
-from core.dialogs.catalog_dialog import pick_category_dialog
+from core.dialogs.catalog_dialog import catalog_dialog
 
 
-dialogues = [pick_category_dialog]
+dialogues = [catalog_dialog]

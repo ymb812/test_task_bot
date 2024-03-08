@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from tortoise import fields
+from tortoise import fields, expressions
 from tortoise.models import Model
 
 
@@ -77,4 +77,40 @@ class Product(Model):
 
     id = fields.IntField(pk=True, index=True)
     name = fields.CharField(max_length=32, null=True)
+    description = fields.CharField(max_length=1024)
+    price = fields.IntField()
+    media_content = fields.CharField(max_length=256, null=True)
     parent_category = fields.ForeignKeyField(model_name='models.SubCategory', to_field='id', null=True)
+
+
+class UserProduct(Model):
+    class Meta:
+        table = 'products_by_users'
+
+    product = fields.ForeignKeyField('models.Product', to_field='id')
+    user = fields.ForeignKeyField('models.User', to_field='user_id')
+    amount = fields.IntField()
+    order = fields.ForeignKeyField('models.Order', to_field='id', null=True)
+
+
+    @classmethod
+    async def add_or_update_product_to_the_cart(cls, product_id: int, user_id: int, amount: int) -> "UserProduct":
+        item = await cls.filter(product_id=product_id, user_id=user_id).first()
+        if item:
+            item.amount = expressions.F('amount') + amount
+            await item.save()
+        else:
+            item = await cls.create(product_id=product_id, user_id=user_id, amount=amount)
+
+        return item
+
+
+class Order(Model):
+    class Meta:
+        table = 'orders'
+
+    id = fields.UUIDField(pk=True)
+    user = fields.ForeignKeyField('models.User', to_field='user_id')
+    is_approved = fields.BooleanField(default=None, null=True)
+    price = fields.IntField(null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
