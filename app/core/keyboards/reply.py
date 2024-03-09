@@ -7,13 +7,7 @@ def main_menu_kb() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
     kb.button(text=_('MENU_CATALOG_BUTTON'))
     kb.button(text=_('MENU_CART_BUTTON'))
+    kb.button(text=_('MY_ORDERS_BUTTON'))
     kb.button(text=_('MENU_FAQ_BUTTON'))
-    kb.adjust(1)
-    return kb.as_markup(resize_keyboard=True)
-
-
-def back_to_menu_kb() -> ReplyKeyboardMarkup:
-    kb = ReplyKeyboardBuilder()
-    kb.button(text=_('BACK_TO_MENU_BUTTON'))
     kb.adjust(1)
     return kb.as_markup(resize_keyboard=True)

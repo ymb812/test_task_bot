@@ -8,6 +8,7 @@ class BotSettings(BaseModel):
     admin_password: SecretStr = fields.Field(max_length=100, alias='ADMIN_PASSWORD')
     required_chat_id: str = fields.Field(alias='REQUIRED_CHAT_ID')
     required_channel_id: str = fields.Field(alias='REQUIRED_CHANNEL_ID')
+    orders_per_msg: int = fields.Field(alias='ORDERS_PER_MSG', default=5)
 
 
 class Broadcaster(BaseModel):

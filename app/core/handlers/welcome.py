@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, StateFilter
 from aiogram_dialog import DialogManager, StartMode
 from core.utils.texts import set_user_commands, set_admin_commands, _
-from core.database.models import User, UserProduct
+from core.database.models import User, UserProduct, Order
 from core.states.dialogs import CatalogStateGroup, CartStateGroup
 from core.keyboards.reply import main_menu_kb
 from settings import settings
@@ -64,5 +64,27 @@ async def cart(message: types.Message, dialog_manager: DialogManager):
 
 
 @router.message(F.text == '❓ Часто задаваемые вопросы', StateFilter(None))
-async def FAQ(message: types.Message, bot: Bot, state: FSMContext):
-    pass
+async def send_faq(message: types.Message, bot: Bot):
+    await message.answer(text=_('FAQ', bot_username=(await bot.get_me()).username))
+
+
+@router.message(F.text == '🛒 Мои заказы', StateFilter(None))
+async def send_orders(message: types.Message):
+    orders = await Order.filter(user_id=message.from_user.id).all()
+    orders_msg = ''
+
+    for i, order in enumerate(orders):
+        if i != 0 and (i % settings.orders_per_msg == 0 or i == len(orders) - 1):
+            await message.answer(text=orders_msg)
+            orders_msg = ''
+
+        status = _('ORDER_IS_PAID')
+        if not order.is_paid:
+            status = _('ORDER_IS_NOT_PAID')
+
+        orders_msg += _(
+            'MY_ORDERS',
+            order_id=order.id,
+            status=status,
+            created_at=order.created_at.strftime('%d.%m.%Y %H:%M')
+        ) + '\n\n'
