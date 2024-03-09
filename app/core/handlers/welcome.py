@@ -1,4 +1,5 @@
 import logging
+import pytz
 from aiogram import Bot, types, Router, F, exceptions
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, StateFilter
@@ -74,10 +75,6 @@ async def send_orders(message: types.Message):
     orders_msg = ''
 
     for i, order in enumerate(orders):
-        if i != 0 and (i % settings.orders_per_msg == 0 or i == len(orders) - 1):
-            await message.answer(text=orders_msg)
-            orders_msg = ''
-
         status = _('ORDER_IS_PAID')
         if not order.is_paid:
             status = _('ORDER_IS_NOT_PAID')
@@ -86,5 +83,10 @@ async def send_orders(message: types.Message):
             'MY_ORDERS',
             order_id=order.id,
             status=status,
-            created_at=order.created_at.strftime('%d.%m.%Y %H:%M')
+            created_at=order.created_at.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y %H:%M')
         ) + '\n\n'
+
+        if i != 0 and (i % settings.orders_per_msg == 0 or i == len(orders) - 1):
+            await message.answer(text=orders_msg)
+            orders_msg = ''
+

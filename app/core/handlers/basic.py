@@ -51,4 +51,4 @@ async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery,
 async def successful_payment(message: types.Message):
     order_id = message.successful_payment.invoice_payload
     await Order.filter(id=order_id).update(is_paid=True)
-    await message.answer(text=_('ORDER_IS_PAID', order_id=order_id))
+    await message.answer(text=_('ORDER_SUCCESSFUL', order_id=order_id))
