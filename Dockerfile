@@ -15,4 +15,4 @@ WORKDIR /app/code
 COPY ./app /app/code
 RUN pybabel compile -d locales -D messages;
 
-ENTRYPOINT ['bash', '/app/docker-entrypoint.sh']
+ENTRYPOINT ["bash", "/app/docker-entrypoint.sh"]
