@@ -1,8 +1,8 @@
 import logging
+import uuid
 from datetime import datetime
 from tortoise import fields, expressions
 from tortoise.models import Model
-
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ class User(Model):
     is_premium = fields.BooleanField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
-
 
     @classmethod
     async def update_data(cls, user_id: int, first_name: str, last_name: str, username: str, language_code: str,
@@ -92,10 +91,9 @@ class UserProduct(Model):
     amount = fields.IntField()
     order = fields.ForeignKeyField('models.Order', to_field='id', null=True)
 
-
     @classmethod
     async def add_or_update_product_to_the_cart(cls, product_id: int, user_id: int, amount: int) -> "UserProduct":
-        item = await cls.filter(product_id=product_id, user_id=user_id).first()
+        item = await cls.filter(product_id=product_id, user_id=user_id, order_id=None).first()
         if item:
             item.amount = expressions.F('amount') + amount
             await item.save()
@@ -105,12 +103,30 @@ class UserProduct(Model):
         return item
 
 
+    # return Product for cart display or return UserProduct for order creating
+    @classmethod
+    async def get_user_cart(cls, user_id: int, return_products: bool = True) -> list[Product or "UserProduct"]:
+        if return_products:
+            return [await product.product for product in await cls.filter(user_id=user_id, order_id=None).all()]
+
+        return [product for product in await cls.filter(user_id=user_id, order_id=None).all()]
+
+
+    @classmethod
+    async def add_cart_to_order(cls, user_id: int, order_id: uuid.UUID):
+        for product in await UserProduct.filter(user_id=user_id, order_id=None).all():
+            product.order_id = order_id
+            await product.save()
+
+
 class Order(Model):
     class Meta:
         table = 'orders'
 
     id = fields.UUIDField(pk=True)
     user = fields.ForeignKeyField('models.User', to_field='user_id')
-    is_approved = fields.BooleanField(default=None, null=True)
-    price = fields.IntField(null=True)
+    is_paid = fields.BooleanField(default=False)
+    price = fields.IntField()
+    product_amount = fields.IntField()
+    delivery_data = fields.CharField(max_length=256)
     created_at = fields.DatetimeField(auto_now_add=True)

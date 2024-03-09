@@ -8,3 +8,10 @@ class CatalogStateGroup(StatesGroup):
     product_interaction = State()
     product_amount = State()
     product_confirm = State()
+
+
+class CartStateGroup(StatesGroup):
+    products = State()
+    product_interaction = State()
+    delivery = State()
+    payment = State()

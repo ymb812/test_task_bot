@@ -4,7 +4,7 @@ from aiogram import types, Router, F, Bot
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from settings import settings
-from core.database.models import User
+from core.database.models import User, Order
 from core.utils.texts import set_admin_commands, _
 from core.keyboards.reply import main_menu_kb
 
@@ -39,3 +39,16 @@ async def admin_login(message: types.Message, state: FSMContext, command: Comman
         await message.answer(text=_('NEW_ADMIN_TEXT'))
         await User.set_status(user_id=message.from_user.id, status='admin')
         await set_admin_commands(bot=bot, scope=types.BotCommandScopeChat(chat_id=message.from_user.id))
+
+
+# payment handler
+@router.pre_checkout_query()
+async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery, bot: Bot):
+    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+
+
+@router.message(F.successful_payment)
+async def successful_payment(message: types.Message):
+    order_id = message.successful_payment.invoice_payload
+    await Order.filter(id=order_id).update(is_paid=True)
+    await message.answer(text=_('ORDER_IS_PAID', order_id=order_id))

@@ -4,8 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, StateFilter
 from aiogram_dialog import DialogManager, StartMode
 from core.utils.texts import set_user_commands, set_admin_commands, _
-from core.database.models import User
-from core.states.dialogs import CatalogStateGroup
+from core.database.models import User, UserProduct
+from core.states.dialogs import CatalogStateGroup, CartStateGroup
 from core.keyboards.reply import main_menu_kb
 from settings import settings
 
@@ -50,13 +50,17 @@ async def start_handler(message: types.Message, bot: Bot, state: FSMContext):
 
 
 @router.message(F.text == '📋 Каталог', StateFilter(None))
-async def catalog(message: types.Message, bot: Bot, state: FSMContext, dialog_manager: DialogManager):
+async def catalog(message: types.Message, dialog_manager: DialogManager):
     await dialog_manager.start(state=CatalogStateGroup.categories, mode=StartMode.RESET_STACK)
 
 
 @router.message(F.text == '📦 Корзина', StateFilter(None))
-async def cart(message: types.Message, bot: Bot, state: FSMContext):
-    pass
+async def cart(message: types.Message, dialog_manager: DialogManager):
+    products = await UserProduct.get_user_cart(user_id=message.from_user.id)
+    if products:
+        await dialog_manager.start(state=CartStateGroup.products, mode=StartMode.RESET_STACK)
+    else:
+        await message.answer(text=_('CART_IS_EMPTY'), reply_markup=main_menu_kb())
 
 
 @router.message(F.text == '❓ Часто задаваемые вопросы', StateFilter(None))
