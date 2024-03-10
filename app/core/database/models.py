@@ -147,13 +147,13 @@ class Post(Model):
         table = 'mailings_content'
 
     id = fields.BigIntField(pk=True)
-    text = fields.TextField(null=True)
-    photo_file_id = fields.TextField(null=True)
-    video_file_id = fields.TextField(null=True)
-    sticker_file_id = fields.TextField(null=True)
-    photo_filename = fields.TextField(null=True)
-    video_filename = fields.TextField(null=True)
-    sticker_filename = fields.TextField(null=True)
+    text = fields.CharField(max_length=256, null=True)
+    photo_file_id = fields.CharField(max_length=256, null=True)
+    video_file_id = fields.CharField(max_length=256, null=True)
+    sticker_file_id = fields.CharField(max_length=256, null=True)
+    photo_filename = fields.CharField(max_length=256, null=True)
+    video_filename = fields.CharField(max_length=256, null=True)
+    sticker_filename = fields.CharField(max_length=256, null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
