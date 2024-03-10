@@ -23,11 +23,28 @@ services:
       - redis_test_task_botdb
 
   bot:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileBot
     container_name: test_task_bot
     restart: 'always'
     networks:
       - redis_test_task_botdb
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+  broadcaster:
+    build:
+      context: .
+      dockerfile: DockerfileBroadcaster
+    container_name: admin-broadcaster
+    restart: "always"
+    networks:
+      - redis_test_task_botdb
+    depends_on:
+      - postgres
     env_file:
       - .env
 

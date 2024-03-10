@@ -17,7 +17,7 @@ env_paths = ['..', '']
 
 root_logger.setLevel(logging.DEBUG)
 for _p in env_paths:
-    base_path = os.path.join('settings', '.env')
+    base_path = os.path.join('..', '.env')
     if os.path.exists(base_path):
         with open(os.path.join(base_path), 'r') as file:
             load_dotenv(stream=file)
