@@ -12,7 +12,8 @@ class BotSettings(BaseModel):
 
 
 class Broadcaster(BaseModel):
-    mailing_batch_size: int = fields.Field(alias='MAILING_BATCH_SIZE')
+    mailing_batch_size: int = fields.Field(alias='MAILING_BATCH_SIZE', default=25)
+    broadcaster_sleep: int = fields.Field(alias='BROADCASTER_SLEEP', default=1)
 
 
 class Dialogues(BaseModel):

@@ -56,7 +56,7 @@ class Category(Model):
         ordering = ['id']
 
     id = fields.IntField(pk=True, index=True)
-    name = fields.CharField(max_length=32, null=True)
+    name = fields.CharField(max_length=32)
 
 
 class SubCategory(Model):
@@ -65,7 +65,7 @@ class SubCategory(Model):
         ordering = ['id']
 
     id = fields.IntField(pk=True, index=True)
-    name = fields.CharField(max_length=32, null=True)
+    name = fields.CharField(max_length=32)
     parent_category = fields.ForeignKeyField(model_name='models.Category', to_field='id', null=True)
 
 
@@ -75,7 +75,7 @@ class Product(Model):
         ordering = ['id']
 
     id = fields.IntField(pk=True, index=True)
-    name = fields.CharField(max_length=32, null=True)
+    name = fields.CharField(max_length=32)
     description = fields.CharField(max_length=1024)
     price = fields.IntField()
     media_content = fields.CharField(max_length=256, null=True)
@@ -130,3 +130,33 @@ class Order(Model):
     product_amount = fields.IntField()
     delivery_data = fields.CharField(max_length=256)
     created_at = fields.DatetimeField(auto_now_add=True)
+
+
+class Dispatcher(Model):
+    class Meta:
+        table = 'mailings'
+        ordering = ['id']
+
+    id = fields.BigIntField(pk=True)
+    post = fields.ForeignKeyField('models.Post', to_field='id')
+    send_at = fields.DatetimeField()
+
+
+class Post(Model):
+    class Meta:
+        table = 'mailings_content'
+
+    id = fields.BigIntField(pk=True)
+    text = fields.CharField(max_length=256, null=True)
+    photo_file_id = fields.CharField(max_length=256, null=True)
+    video_file_id = fields.CharField(max_length=256, null=True)
+    sticker_file_id = fields.CharField(max_length=256, null=True)
+    photo_filename = fields.CharField(max_length=256, null=True)
+    video_filename = fields.CharField(max_length=256, null=True)
+    sticker_filename = fields.CharField(max_length=256, null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
+    @classmethod
+    async def get_posts_by_scenario(cls, scenario_id: int):
+        return await cls.filter(id=scenario_id).all()

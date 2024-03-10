@@ -234,15 +234,15 @@ msgid "INVOICE_DESCRIPTION"
 msgstr "Данные для доставки: {delivery_data}"
 
 
-msgid "ORDER_IS_PAID"
+msgid "ORDER_SUCCESSFUL"
 msgstr "✅ Заказ <code>{order_id}</code> успешно оплачен!"
 
 
 msgid "FAQ"
 msgstr "Чтобы получить ответы на вопросы:\n"
-"1. Введите <code>@{bot_username}</code> здесь или в любом чате\n"
+"1. Введите <code>@{bot_username} [Любой символ]</code> здесь или в любом чате\n"
 "2. Нажмите на интересующий вас вопрос\n"
-"3. Ответ будет отправлен в следующем сообщение"
+"3. Ответ будет отправлен в следующем сообщении"
 
 
 msgid "MY_ORDERS"
