@@ -72,6 +72,10 @@ async def send_faq(message: types.Message, bot: Bot):
 @router.message(F.text == '🛒 Мои заказы', StateFilter(None))
 async def send_orders(message: types.Message):
     orders = await Order.filter(user_id=message.from_user.id).all()
+    if not orders:
+        await message.answer(text=_('THERE_ARE_NO_ORDERS'))
+        return
+
     orders_msg = ''
 
     for i, order in enumerate(orders):

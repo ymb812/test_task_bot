@@ -249,3 +249,7 @@ msgid "MY_ORDERS"
 msgstr "Заказ <code>{order_id}</code>\n"
 "{status}\n"
 "{created_at}"
+
+
+msgid "THERE_ARE_NO_ORDERS"
+msgstr "История заказов пуста"
